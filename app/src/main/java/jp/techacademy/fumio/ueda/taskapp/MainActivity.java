@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void reloadListView() {
         // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
+        //ここの処理でカテゴリ分けするように編集予定
         RealmResults<Task> taskRealmResults = mRealm.where(Task.class).findAllSorted("date", Sort.DESCENDING);
         // 上記の結果を、TaskList としてセットする
         mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
@@ -126,12 +127,6 @@ public class MainActivity extends AppCompatActivity {
         mListView.setAdapter(mTaskAdapter);
         // 表示を更新するために、アダプターにデータが変更されたことを知らせる
         mTaskAdapter.notifyDataSetChanged();
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        mRealm.close();
     }
 }

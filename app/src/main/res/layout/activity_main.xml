@@ -7,6 +7,14 @@
     android:fitsSystemWindows="true"
     tools:context="jp.techacademy.fumio.ueda.taskapp.MainActivity">
 
+    <TextView
+        android:id="@+id/emptyTextView"
+        android:text="表示できる内容がありません"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:textSize="20sp"
+        android:gravity="center"/>
 
     <ListView
         android:id="@+id/listView1"
@@ -19,15 +27,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:inputType="text"
+        android:hint="カテゴリ検索"
         />
-    <Button
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:text="検索"
-        android:layout_gravity="bottom|end"
-        android:layout_marginLeft="300dp"
-        android:id="@+id/button1"/>
-    //android:hint="カテゴリ検索"
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -33,14 +34,18 @@ public class MainActivity extends AppCompatActivity {
     };
     private ListView mListView;
     private TaskAdapter mTaskAdapter;
-    //private EditText mCategorySearch;
-    //String CSW;
+    private EditText mCategorySearch;
+    String CSW;
+    TextView emptyTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //mCategorySearch = (EditText)  findViewById(R.id.category_search_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mCategorySearch = (EditText) findViewById(R.id.category_search_text);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +55,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //エンター押したら検索
+        mCategorySearch.setOnKeyListener(new View.OnKeyListener() {
+                                             @Override
+                                             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                                                 reloadListView();
+                                                 //リストビューを更新
+                                                 return false;
+                                             }
+        });
+
 
         // Realmの設定
         mRealm = Realm.getDefaultInstance();
@@ -124,42 +140,33 @@ public class MainActivity extends AppCompatActivity {
         reloadListView();
     }
 //リロードした時に下記の動作
-
-    //実験
-
-
     private void reloadListView() {
-        EditText editText1 = (EditText) findViewById(R.id.category_search_text);
-        String CSW = editText1.getText().toString();
-       // CSW = mCategorySearch.getText().toString();
-        // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
-        //ここの処理でカテゴリ分けするように編集
-        RealmResults<Task> taskRealmResults = mRealm.where(Task.class).equalTo("category",CSW).findAllSorted("date", Sort.DESCENDING);
-        // 上記の結果を、TaskList としてセットする
-        mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
+
+        CSW = mCategorySearch.getText().toString();
+
+        //検索欄に何も入っていない時はすべて表示させる。文字列の長さ０で判定
+        if (CSW.length() == 0){
+            // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
+            //ここの処理でカテゴリ分けするように編集
+            RealmResults<Task> taskRealmResults = mRealm.where(Task.class).findAllSorted("date", Sort.DESCENDING);
+            // 上記の結果を、TaskList としてセットする
+            mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
+        }else {
+            //すべて表示
+            RealmResults<Task> taskRealmResults = mRealm.where(Task.class).equalTo("category", CSW).findAllSorted("date", Sort.DESCENDING);
+            // 上記の結果を、TaskList としてセットする
+            mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
+        }
         // TaskのListView用のアダプタに渡す
         mListView.setAdapter(mTaskAdapter);
         // 表示を更新するために、アダプターにデータが変更されたことを知らせる
         mTaskAdapter.notifyDataSetChanged();
 
-/*
-// Build the query looking at all users:
-RealmQuery<Task> query = mRealm.where(Task.class);
+        emptyTextView = (TextView)findViewById(R.id.emptyTextView);
+        mListView.setEmptyView(emptyTextView);
+        //↑該当するリストがないとき表示
 
-// Add query conditions:
-query.contains("category", "John");
-query.or().equalTo("category", "Peter");
+        }
 
-    // Execute the query:
-    RealmResults<Task> result1 = query.findAll();
 
-    // Or alternatively do the same all at once (the "Fluent interface"):
-    RealmResults<Task> result2 = mRealm.where(Task.class)
-            .equalTo("name", "John")
-            .or()
-            .equalTo("name", "Peter")
-            .findAll();
-    */
-
-    }
 }

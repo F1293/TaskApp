@@ -10,10 +10,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -29,9 +33,12 @@ public class MainActivity extends AppCompatActivity {
     };
     private ListView mListView;
     private TaskAdapter mTaskAdapter;
+    //private EditText mCategorySearch;
+    //String CSW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //mCategorySearch = (EditText)  findViewById(R.id.category_search_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -116,17 +123,43 @@ public class MainActivity extends AppCompatActivity {
 
         reloadListView();
     }
+//リロードした時に下記の動作
+
+    //実験
+
 
     private void reloadListView() {
+        EditText editText1 = (EditText) findViewById(R.id.category_search_text);
+        String CSW = editText1.getText().toString();
+       // CSW = mCategorySearch.getText().toString();
         // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
-        //ここの処理でカテゴリ分けするように編集予定
-        RealmResults<Task> taskRealmResults = mRealm.where(Task.class).findAllSorted("date", Sort.DESCENDING);
+        //ここの処理でカテゴリ分けするように編集
+        RealmResults<Task> taskRealmResults = mRealm.where(Task.class).equalTo("category",CSW).findAllSorted("date", Sort.DESCENDING);
         // 上記の結果を、TaskList としてセットする
         mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
         // TaskのListView用のアダプタに渡す
         mListView.setAdapter(mTaskAdapter);
         // 表示を更新するために、アダプターにデータが変更されたことを知らせる
         mTaskAdapter.notifyDataSetChanged();
+
+/*
+// Build the query looking at all users:
+RealmQuery<Task> query = mRealm.where(Task.class);
+
+// Add query conditions:
+query.contains("category", "John");
+query.or().equalTo("category", "Peter");
+
+    // Execute the query:
+    RealmResults<Task> result1 = query.findAll();
+
+    // Or alternatively do the same all at once (the "Fluent interface"):
+    RealmResults<Task> result2 = mRealm.where(Task.class)
+            .equalTo("name", "John")
+            .or()
+            .equalTo("name", "Peter")
+            .findAll();
+    */
 
     }
 }

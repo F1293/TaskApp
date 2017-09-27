@@ -7,10 +7,27 @@
     android:fitsSystemWindows="true"
     tools:context="jp.techacademy.fumio.ueda.taskapp.MainActivity">
 
+
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <EditText
+        android:id="@+id/category_search_text"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:inputType="text"
+        />
+    <Button
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="検索"
+        android:layout_gravity="bottom|end"
+        android:layout_marginLeft="300dp"
+        android:id="@+id/button1"/>
+    //android:hint="カテゴリ検索"
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
